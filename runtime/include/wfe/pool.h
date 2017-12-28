@@ -12,7 +12,8 @@
 #define WFE_POOL_OMEM_TIER WFE_MAKE_MEMORY_ERROR(12)
 #define WFE_POOL_OMEM_POOL WFE_MAKE_MEMORY_ERROR(13)
 
-/** \brief References for a chunk memory allocation.
+/**
+ * References for a chunk memory allocation.
  */
 typedef struct wfePoolBlock {
     struct wfePoolBlock *next; // Next block
@@ -21,17 +22,19 @@ typedef struct wfePoolBlock {
     wfeData *end;   // End of block (start+size)
 } wfePoolBlock;
 
-/** \brief A size-based tier of chunks.
+/**
+ * A size-based tier of chunks.
  */
 typedef struct wfePoolTier {
     wfePoolBlock *first, *current;
     wfeSize size;
 } wfePoolTier;
 
-/** \brief Memory pool.
+/**
+ * General propouse memory pool, objects are arranged
+ * using size tiers.
  *
- * General propouse memory pool, implemented using
- * object tiers and without threading support.
+ * Warning: not thread-safe.
  */
 typedef struct wfePool {
     wfePoolTier* tiny;
