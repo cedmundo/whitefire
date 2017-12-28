@@ -21,11 +21,6 @@ static char * test_types_bool() {
     return 0;
 }
 
-static char * test_types_char() {
-    mu_assert("size of wfeChar16 <= wfeChar32", sizeof(wfeChar16) <= sizeof(wfeChar32));
-    return 0;
-}
-
 static char * test_types_alignof() {
     mu_assert("unexpected aligment for wfeInt16 and wfeInt32", wfeAlignOf(wfeInt16)*2 == wfeAlignOf(wfeInt32));
     mu_assert("unexpected aligment for wfeInt32 and wfeInt64", wfeAlignOf(wfeInt32)*2 == wfeAlignOf(wfeInt64));
@@ -54,7 +49,6 @@ static char * types_suite() {
     mu_run_test(test_types_int);
     mu_run_test(test_types_float);
     mu_run_test(test_types_bool);
-    mu_run_test(test_types_char);
     mu_run_test(test_types_alignof);
     mu_run_test(test_types_error);
     mu_suite_end(types);

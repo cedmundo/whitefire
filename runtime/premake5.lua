@@ -2,11 +2,16 @@ project "wferuntime"
     kind "StaticLib"
     language "C"
     cdialect "C11"
-    defines {"WFE_USE_STDINT", "WFE_USE_C11_ALIGNOF"}
     targetdir "lib/%{cfg.buildcfg}"
 
     includedirs {"include"}
     files {"src/**.c", "src/**.h"}
+
+    filter "platforms:Linux"
+        defines {"WFE_USE_STDDEF", "WFE_USE_STDINT"}
+
+    filter "platforms:Windows"
+        defines {"WFE_USE_MSVSCDEF", "WFE_USE_MSVSCDEF"}
 
     filter "configurations:Debug"
         defines {"DEBUG"}
@@ -22,7 +27,6 @@ project "wferuntime-test"
     kind "ConsoleApp"
     language "C"
     cdialect "C11"
-    defines {"WFE_USE_STDINT", "WFE_USE_C11_ALIGNOF"}
     targetdir "bin/%{cfg.buildcfg}/Tests"
 
     includedirs {"include"}
@@ -32,6 +36,12 @@ project "wferuntime-test"
     postbuildcommands {
         "./bin/%{cfg.buildcfg}/Tests/wferuntime-test"
     }
+
+    filter "platforms:Linux"
+        defines {"WFE_USE_STDDEF", "WFE_USE_STDINT"}
+
+    filter "platforms:Windows"
+        defines {"WFE_USE_MSVSCDEF", "WFE_USE_MSVSCDEF"}
 
     filter "configurations:Debug"
         defines {"DEBUG"}

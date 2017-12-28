@@ -1,6 +1,6 @@
 workspace "Whitefire"
     configurations { "Debug", "Release" }
-    platforms {"linux"}
+    platforms {"Linux", "Windows"}
 
 include "runtime"
 -- include "tools"

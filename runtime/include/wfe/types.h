@@ -7,62 +7,67 @@ typedef void* wfeAny;
 // Raw data representation.
 typedef char wfeData;
 
+// Size with aligment definitions.
+#ifdef WFE_USE_STDDEF
+    #include <stddef.h>
+    #include <stdalign.h>
+    typedef size_t wfeSize;
+    #define wfeOffsetOf(st, m) (offsetof(st, m))
+    #define wfeAlignOf(type) (alignof(type))
+#elif defined(WFE_USE_MSVSCDEF)
+    #include <stdlib.h>
+    typedef size_t wfeSize;
+    #define wfeOffsetOf(st, m) (offsetof(st, m))
+    #define wfeAlignOf(type) (__alignof(type))
+#else
+    #include <stdlib.h>
+    typedef size_t wfeSize;
+    #define wfeOffsetOf(st, m) ((size_t)&(((st *)0)->m))
+    #define wfeAlignOf(type) (wfeOffsetOf(struct{char c;type member;}, member))
+#endif
+
 // Integer definition.
 #ifdef WFE_USE_STDINT
-#include <stdint.h>
-typedef int16_t wfeInt16;
-typedef int32_t wfeInt32;
-typedef uint32_t wfeUint32;
-typedef int64_t wfeInt64;
-typedef uint64_t wfeUint64;
-typedef int64_t wfeInt;
-typedef uint64_t wfeUint;
+    #include <stdint.h>
+    typedef int16_t wfeInt16;
+    typedef int32_t wfeInt32;
+    typedef uint32_t wfeUint32;
+    typedef int64_t wfeInt64;
+    typedef uint64_t wfeUint64;
+    typedef int64_t wfeInt;
+    typedef uint64_t wfeUint;
 #elif defined(WFE_USE_MSVSCINT)
-typedef __int16 wfeInt16;
-typedef __int32 wfeInt32;
-typedef unsigned __int32 wfeUint32;
-typedef __int64 wfeInt64;
-typedef unsigned __int64 wfeUint64;
-typedef __int64 wfeInt;
-typedef unsigned __int64 wfeUint;
+    typedef __int16 wfeInt16;
+    typedef __int32 wfeInt32;
+    typedef unsigned __int32 wfeUint32;
+    typedef __int64 wfeInt64;
+    typedef unsigned __int64 wfeUint64;
+    typedef __int64 wfeInt;
+    typedef unsigned __int64 wfeUint;
 #else
 #warning "Integer type size is not guaranteed"
-typedef short wfeInt16;
-typedef int wfeInt32;
-typedef unsigned int wfeUint32;
-typedef long wfeInt64;
-typedef unsigned long wfeUint64;
-typedef long wfeInt;
-typedef unsigned long wfeUint;
+    typedef short wfeInt16;
+    typedef int wfeInt32;
+    typedef unsigned int wfeUint32;
+    typedef long wfeInt64;
+    typedef unsigned long wfeUint64;
+    typedef long wfeInt;
+    typedef unsigned long wfeUint;
 #endif
 
 // Floating definition.
 typedef float wfeFloat32;
 typedef double wfeFloat64;
-typedef double wfeNumeric;
+#ifdef WFE_USE_FLOATNUM
+typedef float wfeNum;
+#else
+typedef double wfeNum;
+#endif
 
 // Boolean definition.
 typedef int wfeBool;
 #define WFE_TRUE (1)
 #define WFE_FALSE (0)
-
-// Character definition.
-#ifdef WFE_USE_UCHAR
-#include <uchar.h>
-#else
-typedef wfeInt16 char16_t;
-typedef wfeInt32 char32_t;
-#endif
-typedef char16_t wfeChar16;
-typedef char32_t wfeChar32;
-
-#include <stddef.h>
-typedef size_t wfeSize;
-#ifdef WFE_USE_C11_ALIGNOF
-    #define wfeAlignOf(type) (alignof(type))
-#else
-    #define wfeAlignOf(type) (offsetof(struct{char c;type member;}, member))
-#endif
 
 // Error definition.
 typedef wfeInt64 wfeError;
