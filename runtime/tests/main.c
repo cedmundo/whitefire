@@ -6,6 +6,7 @@
 
 int tests_run = 0;
 static char * all_suites() {
+    mu_msg("Running tests for WhiteFire Game Engine");
     mu_run_suite(types_suite);
     return 0;
 }
@@ -13,7 +14,7 @@ static char * all_suites() {
 int main() {
     char *result = all_suites();
     if (result != 0) {
-        fprintf(stderr, "%s\n", result);
+        fprintf(stderr, "\t=> failed: %s\n", result);
     } else {
         fprintf(stderr, "ALL TESTS PASSED\n");
     }

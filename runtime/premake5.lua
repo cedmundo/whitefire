@@ -1,7 +1,10 @@
 project "wferuntime"
     kind "StaticLib"
     language "C"
+    cdialect "C11"
+    defines {"WFE_USE_STDINT", "WFE_USE_C11_ALIGNOF"}
     targetdir "lib/%{cfg.buildcfg}"
+
     includedirs {"include"}
     files {"src/**.c", "src/**.h"}
 
@@ -13,20 +16,21 @@ project "wferuntime"
         defines {"NDEBUG"}
         optimize "On"
 
-    filter "platforms:linux"
-        defines {"WFE_USE_STDINT", "WFE_USE_C11_ALIGNOF"}
+project "wferuntime-test"
+    dependson {"wferuntime"}
 
-project "wferuntime-tests"
     kind "ConsoleApp"
     language "C"
-    targetdir "bin/%{cfg.buildcfg}"
-    dependson {"wferuntime"}
+    cdialect "C11"
+    defines {"WFE_USE_STDINT", "WFE_USE_C11_ALIGNOF"}
+    targetdir "bin/%{cfg.buildcfg}/Tests"
+
     includedirs {"include"}
     files {"tests/**.c", "tests/**.h"}
     links {"wferuntime"}
 
     postbuildcommands {
-        "./bin/%{cfg.buildcfg}/wferuntime-tests"
+        "./bin/%{cfg.buildcfg}/Tests/wferuntime-test"
     }
 
     filter "configurations:Debug"

@@ -26,7 +26,7 @@ typedef unsigned __int64 wfeUint64;
 typedef __int64 wfeInt;
 typedef unsigned __int64 wfeUint;
 #else
-#warning "Either stdint nor msvsc configs are available for int definition, type size is not guaranteed"
+#warning "Integer type size is not guaranteed"
 typedef short wfeInt16;
 typedef int wfeInt32;
 typedef unsigned int wfeUint32;
@@ -56,9 +56,6 @@ typedef wfeInt32 char32_t;
 typedef char16_t wfeChar16;
 typedef char32_t wfeChar32;
 
-// Error definition.
-typedef wfeInt64 wfeError;
-
 #include <stddef.h>
 typedef size_t wfeSize;
 #ifdef WFE_USE_C11_ALIGNOF
@@ -67,4 +64,21 @@ typedef size_t wfeSize;
     #define wfeAlignOf(type) (offsetof(struct{char c;type member;}, member))
 #endif
 
+// Error definition.
+typedef wfeInt64 wfeError;
+#define WFE_SUCCESS ((wfeError) 0x0L)
+#define WFE_FAILURE ((wfeError) 0x1L)
+#define WFE_MEMORY_ERROR ((wfeError) 0x3L)
+#define WFE_FILE_ERROR ((wfeError) 0x5L)
+
+#define WFE_MAKE_FAILURE(code) (WFE_FAILURE | (code<<8))
+#define WFE_MAKE_MEMORY_ERROR(code) (WFE_MEMORY_ERROR | (code<<8))
+#define WFE_MAKE_FILE_ERROR(code) (WFE_FILE_ERROR | (code<<8))
+
+#define WFE_CHECK_FLAG(value, bitindex) ((value & (1 << bitindex)) != 0)
+#define WFE_HAS_FAILED(value) WFE_CHECK_FLAG(value, 0)
+#define WFE_HAS_MEMORY_ERROR(value) WFE_CHECK_FLAG(value, 1)
+#define WFE_HAS_FILE_ERROR(value) WFE_CHECK_FLAG(value, 2)
+
+#define WFE_USER_ERROR_CODE(value) (value>>8)
 #endif

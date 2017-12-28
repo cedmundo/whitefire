@@ -58,3 +58,6 @@ obj/
 bin/
 Makefile
 *.make
+
+# Vim memory files
+*.swp
