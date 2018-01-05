@@ -90,3 +90,27 @@ void wfePoolTierFinalize(wfePoolTier *tier) {
     tier->current = NULL;
 }
 
+wfeSize wfePoolTierAvailable(wfePoolTier *tier) {
+    assert(tier != NULL /* tier should not be null */);
+    if (tier->current == NULL)
+        return (wfeSize) 0L;
+
+    return wfePoolBlockAvailable(tier->current);
+}
+
+wfeSize wfePoolTierTotalSize(wfePoolTier *tier) {
+    wfePoolBlock *cur = NULL;
+    wfeSize len = 0;
+    assert(tier != NULL /* tier should not be null */);
+
+    if (tier->current == NULL)
+        return (wfeSize) 0L;
+
+    cur = tier->first;
+    while(cur != NULL) {
+        len += wfePoolBlockTotalSize(cur);
+        cur = cur->next;
+    }
+
+    return len;
+}

@@ -119,4 +119,63 @@ wfeError wfePoolTierInit(wfePoolTier *tier, wfeSize size);
  */
 void wfePoolTierFinalize(wfePoolTier *tier);
 
+/**
+ * Calculates the available memory on current block.
+ *
+ * Params:
+ *  - tier of blocks to calculate.
+ * Return:
+ *  - 0 if no memory is available.
+ *  - >0 bytes of available bytes.
+ */
+wfeSize wfePoolTierAvailable(wfePoolTier *tier);
+
+/**
+ * Calculates the total size of the entire block chain.
+ *
+ * Params:
+ *  - tier of blocks to know the size.
+ * Returns:
+ *  - 0 if no memory have been allocated.
+ *  - >0 bytes of allocated memory.
+ */
+wfeSize wfePoolTierTotalSize(wfePoolTier *tier);
+
+/**
+ * Requests and returns usable memory space allocated within the current block with
+ * specified size and align. If size is bigger than maximum supported chunk size then
+ * allocator will automatically request enough memory and will create a custom-size chunk.
+ *
+ * Params:
+ *  - tier from memory is going to be taken.
+ *  - size of wanted block.
+ *  - align of object.
+ * Returns:
+ *  - NULL if could not allocate new block and tier's memory is exhausted.
+ *  - An aligned pointer to usable memory space (read and write, not thread safe).
+ */
+wfeData *wfePoolTierGet(wfePoolTier *tier, wfeSize size, wfeSize align);
+
+/**
+ * Cleans up the registers of the tier without loosing or freeing requested memory.
+ * Warning: This method does not call free at any time,
+ * you also must finalize the tier after program executes.
+ *
+ * Params:
+ *  - tier of memory to recycle.
+ */
+void wfePoolTierRecycle(wfePoolTier *tier);
+
+// Pool
+// wfeError wfePoolInit(wfePool *pool);
+//
+// void wfePoolFinalize(wfePool *pool);
+//
+// wfeSize wfePoolAvailable(wfePool *pool);
+//
+// wfeSize wfePoolTotalSize(wfePool *pool);
+//
+// wfeData *wfePoolGet(wfePool *pool, wfeSize size, wfeSize align);
+//
+// void wfePoolRecycle(wfePool *pool);
 #endif
