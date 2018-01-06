@@ -114,3 +114,74 @@ wfeSize wfePoolTierTotalSize(wfePoolTier *tier) {
 
     return len;
 }
+
+wfeData *wfePoolTierGet(wfePoolTier *tier, wfeSize size, wfeSize align) {
+    wfePoolBlock *tmp = NULL;
+    wfeData *ptr = NULL;
+    wfeError res = WFE_SUCCESS;
+    assert(tier != NULL /* tier must not be null */);
+    assert(size > 0 /* Size must be at least 1 */);
+
+    // Align memory to prevent hardware exceptions or slowness
+    size = wfePoolMemoryAlign(size, align);
+
+    // Allocate a bigger chunk if required size is major than current chunksize
+    if (size > tier->size) {
+        tmp = malloc(sizeof(wfePoolBlock));
+        res = wfePoolBlockInit(tmp, size);
+        if (WFE_HAS_FAILED(res)) {
+            if (tmp != NULL) {
+                free(tmp);
+            }
+
+            return NULL;
+        }
+
+        // If there is recycled memory use int, only insert bigger chunk.
+        if (tier->current->next != NULL) {
+            tmp->next = tier->current->next;
+        }
+
+        // Insert block on the chain.
+        tier->current->next = tmp;
+        tier->current = tmp;
+    }
+
+    tmp = tier->current;
+    ptr = tmp->head; // Usable memory
+    tmp->head += size; // Move head to next block.
+
+    // Check if current block is exhausted.
+    if (tmp->head >= tmp->end) {
+
+        // Is the current next block already allocated?
+        if (tmp->next != NULL){
+            // Re-use block.
+            tmp->next->head = tmp->next->start;
+            tier->current = tmp->next;
+        } else {
+            // Otherwise extend tier with new block
+            tmp->next = malloc(sizeof(wfePoolBlock));
+            res = wfePoolBlockInit(tmp->next, size);
+            if (WFE_HAS_FAILED(res)) {
+                if (tmp->next != NULL) {
+                    free(tmp->next);
+                }
+
+                return NULL;
+            }
+
+            tier->current = tmp->next;
+        }
+
+        // Set ptr to the first location in the new block
+        ptr = tier->current->head;
+        tier->current->head += size;
+    }
+
+    return ptr;
+}
+
+void wfePoolTierRecycle(wfePoolTier *tier) {
+
+}

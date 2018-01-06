@@ -71,15 +71,55 @@ static char * test_pool_tier_size() {
 
 static char * test_pool_tier_get() {
     wfePoolTier tier;
-    wfeSize st1 = sizeof(char) * 3;
-    wfeSize size = sizeof(char) * 8;
+    wfeSize size = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    wfeData *data = NULL;
+
+    mu_assert("initialize tier", wfePoolTierInit(&tier, WFE_POOL_TINY) == WFE_SUCCESS);
+
+    // Get memory from pool tier
+    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (first request)", data != NULL);
+    mu_assert("data outside of current chunk space (first request)", data >= tier.current->start && data < tier.current->end);
+
+    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (second request)", data != NULL);
+    mu_assert("data outside of current chunk space (second request)", data >= tier.current->start && data < tier.current->end);
+
+    wfePoolTierFinalize(&tier);
+    return 0;
+}
+
+static char * test_pool_tier_allocate_bigger() {
+    wfePoolTier tier;
+    wfeSize size = sizeof(char) * 2;
+    wfeSize expectedSize = wfePoolMemoryAlign(sizeof(wfePoolDummy)*2, wfeAlignOf(wfePoolDummy));
 
     mu_assert("initialize tier", wfePoolTierInit(&tier, size) == WFE_SUCCESS);
 
-    // Get memory from pool tier
-    wfeData *data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    // Get memory bigger than supported size.
+    wfeData *data = wfePoolTierGet(&tier, sizeof(wfePoolDummy)*2, wfeAlignOf(wfePoolDummy));
     mu_assert("unexpected null pointer", data != NULL);
-    mu_assert("data outside of current chunk space", data >= tier.current->start && data < tier.current->end );
+    mu_assert("size of block is smaller than requested", wfePoolBlockTotalSize(tier.current) == expectedSize);
+
+    wfePoolTierFinalize(&tier);
+    return 0;
+}
+
+static char * test_pool_tier_recycle() {
+    wfePoolTier tier;
+    wfeSize size = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+
+    mu_assert("initialize tier", wfePoolTierInit(&tier, size) == WFE_SUCCESS);
+    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (first request)", data != NULL);
+    mu_assert("data outside of current chunk space (first request)", data >= tier.current->start && data < tier.current->end);
+
+    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (second request)", data != NULL);
+    mu_assert("data outside of current chunk space (second request)", data >= tier.current->start && data < tier.current->end);
+
+    wfePoolTierRecycle(&tier);
+    mu_assert("LOLOLOLO", 0);
 
     wfePoolTierFinalize(&tier);
     return 0;
@@ -92,6 +132,8 @@ static char * pool_suite() {
     mu_run_test(test_pool_tier_init_finalize);
     mu_run_test(test_pool_tier_size);
     mu_run_test(test_pool_tier_get);
+    mu_run_test(test_pool_tier_allocate_bigger);
+    mu_run_test(test_pool_tier_recycle);
     mu_suite_end(pool);
     return 0;
 }

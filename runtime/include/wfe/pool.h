@@ -166,10 +166,21 @@ wfeData *wfePoolTierGet(wfePoolTier *tier, wfeSize size, wfeSize align);
  */
 void wfePoolTierRecycle(wfePoolTier *tier);
 
-// Pool
+/**
+ * Initializes a memory pool.
+ *
+ * Only sets to zero value each tier so they can be marked as uninitialized.
+ *
+ * Params:
+ *  - pool to initialize.
+ * Return:
+ *  - WFE_SUCCESS, always for version 1.0.
+ */
 // wfeError wfePoolInit(wfePool *pool);
+
 //
 // void wfePoolFinalize(wfePool *pool);
+
 //
 // wfeSize wfePoolAvailable(wfePool *pool);
 //
