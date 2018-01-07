@@ -132,6 +132,79 @@ static char * test_pool_tier_recycle() {
     return 0;
 }
 
+static char * test_pool_init_finalize() {
+    wfePool pool;
+    mu_assert("initialize pool", wfePoolInit(&pool) == WFE_SUCCESS);
+
+    wfePoolFinalize(&pool);
+    mu_assert("should not reference memory after finalize",
+            pool.tiny == NULL &&
+            pool.small == NULL &&
+            pool.medium == NULL &&
+            pool.large == NULL &&
+            pool.huge == NULL);
+    return 0;
+}
+
+static char * test_pool_misc_and_size() {
+    wfePool pool;
+    wfeSize size = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+
+    mu_assert("initialize pool", wfePoolInit(&pool) == WFE_SUCCESS);
+    mu_assert("set pool fixed size", wfePoolFixedTier(&pool, size) == WFE_SUCCESS);
+    mu_assert("invalid pool size", wfePoolTotalSize(&pool) == size);
+
+    wfePoolFinalize(&pool);
+    return 0;
+}
+
+static char * test_pool_get () {
+    wfePool pool;
+    wfeSize s1 = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    wfeSize s2 = wfePoolMemoryAlign(sizeof(char) * 256, wfeAlignOf(char)); // Should be stored on 1KB instead 512B
+
+    mu_assert("initialize pool", wfePoolInit(&pool) == WFE_SUCCESS);
+    wfeData *d1 = wfePoolGet(&pool, s1, wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d1 request)", d1 != NULL);
+    mu_assert("did not initialize tiny tier", pool.tiny != NULL);
+    mu_assert("tiny data is not allocated within tiny tier", d1 >= pool.tiny->current->start && d1 < pool.tiny->current->end );
+
+    wfeData *d2 = wfePoolGet(&pool, s2, wfeAlignOf(char));
+    mu_assert("unexpected null pointer (d2 request)", d2 != NULL);
+    mu_assert("did not initialize small tier", pool.small != NULL);
+    mu_assert("small data is not allocated within small tier", d2 >= pool.small->current->start && d2 < pool.small->current->end );
+
+    wfePoolFinalize(&pool);
+    return 0;
+}
+static char * test_pool_recycle() {
+    wfePool pool;
+    wfeData *d1 = NULL, *d2 = NULL, *d3 = NULL, *d4 = NULL;
+    wfeSize size = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+
+    mu_assert("initialize tier", wfePoolInit(&pool) == WFE_SUCCESS);
+
+    d1 = wfePoolGet(&pool, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d1 request)", d1 != NULL);
+    mu_assert("data outside of current chunk space (first request)", d1 >= pool.tiny->current->start && d1 < pool.tiny->current->end);
+
+    d2 = wfePoolGet(&pool, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d2 request)", d2 != NULL);
+    mu_assert("data outside of current chunk space (second request)", d2 >= pool.tiny->current->start && d2 < pool.tiny->current->end);
+
+    wfePoolRecycle(&pool);
+    d3 = wfePoolGet(&pool, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d3 request)", d3 != NULL);
+    mu_assert("did not recycle d1", d1 == d3);
+
+    d4 = wfePoolGet(&pool, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d3 request)", d4 != NULL);
+    mu_assert("did not recycle d2", d2 == d4);
+
+    wfePoolFinalize(&pool);
+    return 0;
+}
+
 static char * pool_suite() {
     mu_suite_start(pool);
     mu_run_test(test_pool_block_init_finalize);
@@ -141,6 +214,10 @@ static char * pool_suite() {
     mu_run_test(test_pool_tier_get);
     mu_run_test(test_pool_tier_allocate_bigger);
     mu_run_test(test_pool_tier_recycle);
+    mu_run_test(test_pool_init_finalize);
+    mu_run_test(test_pool_misc_and_size);
+    mu_run_test(test_pool_get);
+    mu_run_test(test_pool_recycle);
     mu_suite_end(pool);
     return 0;
 }

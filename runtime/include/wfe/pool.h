@@ -2,7 +2,7 @@
 #define WFE_POOL_H
 #include <wfe/types.h>
 
-#define WFE_POOL_TINY   ((wfeSize) 512)         // 512 B
+#define WFE_POOL_TINY   ((wfeSize) 128)         // 128 B
 #define WFE_POOL_SMALL  ((wfeSize) 1024)        // 1 KB
 #define WFE_POOL_MEDIUM ((wfeSize) 1048576)     // 1 MB
 #define WFE_POOL_LARGE  ((wfeSize) 10485760)    // 10 MB
@@ -43,6 +43,10 @@ typedef struct wfePool {
     wfePoolTier* medium;
     wfePoolTier* large;
     wfePoolTier* huge;
+    wfePoolTier* custom;
+    wfePoolTier* fixed;
+    wfeNum threshold;
+    wfeError lastError;
 } wfePool;
 
 /**
@@ -193,12 +197,64 @@ wfeError wfePoolInit(wfePool *pool);
  */
 void wfePoolFinalize(wfePool *pool);
 
-//
-// wfeSize wfePoolAvailable(wfePool *pool);
-//
-// wfeSize wfePoolTotalSize(wfePool *pool);
-//
-// wfeData *wfePoolGet(wfePool *pool, wfeSize size, wfeSize align);
-//
-// void wfePoolRecycle(wfePool *pool);
+/**
+ * Sets the fixed tier of the pool, redirecting all memory requests to that chain.
+ * Useful for objects that have the same size.
+ *
+ * Note: fixing size does not restrict bigger o smaller size requests, bigger requests will
+ * create a custom chunk within the chain and smaller requests will sectionate current chunk.
+ * However it is not recommended because many objects might severly fragment the memory blocks.
+ *
+ * Params:
+ *  - pool to set fixed size.
+ *  - size of each object.
+ * Return:
+ *  - WFE_SUCCESS.
+ *  - WFE_POOL_OMEM_CHUNK if no memory is available to allocate first block's memory chunk (from tier).
+ *  - WFE_POOL_OMEM_BLOCK if no memory is available to allocate first block's header (from tier).
+ *  - WFE_POOL_OMEM_TIER if no memory is available to allocate tier's handler.
+ */
+wfeError wfePoolFixedTier(wfePool *pool, wfeSize size);
+
+/**
+ * Calculates the allocated memory of all pool, including all tiers with all tiers.
+ *
+ * Params:
+ *  - pool to calculate size.
+ * Returns:
+ *  - Total size of allocations on bytes.
+ *  - 0 if no memory have been allocated.
+ */
+wfeSize wfePoolTotalSize(wfePool *pool);
+
+/**
+ * Compares size parameter with each internal tier, if it's <threshold> times smaller then request
+ * is assigned to that tier, pasively creating and initializing it, if success reference is returned.
+ *
+ * Note: if pool has a fixed size tier, then all requests are going to be redirected to that tier,
+ * no matter the size.
+ *
+ * Warning: this methods is silent when failing, a memory failure might be present at any time on
+ * this function. Use pool#lastError to get the problem.
+ *
+ * Params:
+ *  - pool to take memory of.
+ *  - size of required block.
+ *  - align of type, use wfeAlignOf to get the aligment.
+ * Returns:
+ *  - NULL if could not allocate or initialize tier handler or memory chunk.
+ *  - An aligned pointer to usable memory space (read and write, not thread safe).
+ */
+wfeData *wfePoolGet(wfePool *pool, wfeSize size, wfeSize align);
+
+/**
+ * Recycles all tiers of a pool. This operation does not free any memory so developer must call
+ * wfePoolFinalize anyways.
+ *
+ * Useful (and fast) way to re-use a pool without allocating or freeing memory.
+ * Params:
+ *  - pool to recycle.
+ */
+void wfePoolRecycle(wfePool *pool);
+
 #endif
