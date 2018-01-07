@@ -13,14 +13,6 @@ project "wferuntime"
     filter "platforms:Windows"
         defines {"WFE_USE_MSVSCDEF", "WFE_USE_MSVSCDEF"}
 
-    filter "configurations:Debug"
-        defines {"DEBUG"}
-        symbols "On"
-
-    filter "configurations:Release"
-        defines {"NDEBUG"}
-        optimize "On"
-
 project "wferuntime-test"
     dependson {"wferuntime"}
 
@@ -43,10 +35,3 @@ project "wferuntime-test"
     filter "platforms:Windows"
         defines {"WFE_USE_MSVSCDEF", "WFE_USE_MSVSCDEF"}
 
-    filter "configurations:Debug"
-        defines {"DEBUG"}
-        symbols "On"
-
-    filter "configurations:Release"
-        defines {"NDEBUG"}
-        optimize "On"

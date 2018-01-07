@@ -1,36 +1,83 @@
 project "zlib"
   language "C"
   kind "StaticLib"
+  targetdir "lib"
+  targetprefix ""
+  defines { "N_FSEEKO" }
+  files {
+    'zlib/inffast.c',
+    'zlib/deflate.c',
+    'zlib/gzwrite.c',
+    'zlib/infback.c',
+    'zlib/compress.c',
+    'zlib/gzclose.c',
+    'zlib/inflate.c',
+    'zlib/trees.c',
+    'zlib/zutil.c',
+    'zlib/inftrees.c',
+    'zlib/adler32.c',
+    'zlib/gzread.c',
+    'zlib/crc32.c',
+    'zlib/gzlib.c',
+    'zlib/uncompr.c'
+  }
+
+project "libpng"
+  language "C"
+  kind "StaticLib"
   warnings "off"
   targetdir "lib"
-  defines { "N_FSEEKO" }
-  files {"zlib/*.c", "zlib/*.h"}
+  targetprefix ""
+  includedirs {"vendor/misc"}
 
-  filter "system:windows"
-    defines {"_WINDOWS"}
+  files {
+    "libpng/png.c",
+    "libpng/pngerror.c",
+    "libpng/pngget.c",
+    "libpng/pngmem.c",
+    "libpng/pngpread.c",
+    "libpng/pngread.c",
+    "libpng/pngrio.c",
+    "libpng/pngrtran.c",
+    "libpng/pngrutil.c",
+    "libpng/pngset.c",
+    "libpng/pngtrans.c",
+    "libpng/pngwio.c",
+    "libpng/pngwrite.c",
+    "libpng/pngwtran.c",
+    "libpng/pngwutil.c",
+  }
 
-  filter "system:not windows"
-    defines {"HAVE_UNISTD_H"}
+  -- TODO: Configuration/Definitions?
+  -- TODO: Add optimizations for architecture/system
 
 project "zlib-test"
   language "C"
   kind "ConsoleApp"
-  warnings "off"
   targetdir "bin/%{cfg.buildcfg}"
 
   dependson {"zlib"}
   links {"zlib"}
-
-  defines { "N_FSEEKO" }
   files {"zlib/test/example.c"}
-
-  filter "system:windows"
-    defines {"_WINDOWS"}
-
-  filter "system:not windows"
-    defines {"HAVE_UNISTD_H"}
 
   postbuildcommands {
       "./bin/%{cfg.buildcfg}/zlib-test",
-      "rm foo.gz"
+      "{DELETE} foo.gz"
+  }
+
+project "libpng-test"
+  language "C"
+  kind "ConsoleApp"
+  targetdir "bin/%{cfg.buildcfg}"
+  linkgroups "On"
+
+  dependson {"zlib", "libpng"}
+  links {"m", "zlib", "libpng"}
+  files {"libpng/pngtest.c"}
+
+  postbuildcommands {
+      "{COPY} libpng/pngtest.png pngtest.png",
+      "./bin/%{cfg.buildcfg}/libpng-test",
+      "{DELETE} pngtest.png",
+      "{DELETE} pngout.png"
   }
