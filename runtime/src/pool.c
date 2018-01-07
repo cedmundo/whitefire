@@ -183,5 +183,6 @@ wfeData *wfePoolTierGet(wfePoolTier *tier, wfeSize size, wfeSize align) {
 }
 
 void wfePoolTierRecycle(wfePoolTier *tier) {
-
+    tier->current = tier->first;
+    tier->current->head = tier->current->start;
 }

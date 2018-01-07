@@ -176,10 +176,22 @@ void wfePoolTierRecycle(wfePoolTier *tier);
  * Return:
  *  - WFE_SUCCESS, always for version 1.0.
  */
-// wfeError wfePoolInit(wfePool *pool);
+wfeError wfePoolInit(wfePool *pool);
 
-//
-// void wfePoolFinalize(wfePool *pool);
+/**
+ * Releases all resources of a pool.
+ *
+ * Finalizes all used tiers calling wfePoolTierFinalize for each, which should
+ * also release all chunk chains.
+ *
+ * Warning: do not write/read on any reference that points to data stored
+ * on finalized pool. It is not guaranteed that memory is still available and
+ * might throw a segment fault exeption.
+ *
+ * Params:
+ *  - pool to finalize.
+ */
+void wfePoolFinalize(wfePool *pool);
 
 //
 // wfeSize wfePoolAvailable(wfePool *pool);

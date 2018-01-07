@@ -107,19 +107,26 @@ static char * test_pool_tier_allocate_bigger() {
 
 static char * test_pool_tier_recycle() {
     wfePoolTier tier;
+    wfeData *d1 = NULL, *d2 = NULL, *d3 = NULL, *d4 = NULL;
     wfeSize size = wfePoolMemoryAlign(sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
 
     mu_assert("initialize tier", wfePoolTierInit(&tier, size) == WFE_SUCCESS);
-    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
-    mu_assert("unexpected null pointer (first request)", data != NULL);
-    mu_assert("data outside of current chunk space (first request)", data >= tier.current->start && data < tier.current->end);
+    d1 = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d1 request)", d1 != NULL);
+    mu_assert("data outside of current chunk space (first request)", d1 >= tier.current->start && d1 < tier.current->end);
 
-    data = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
-    mu_assert("unexpected null pointer (second request)", data != NULL);
-    mu_assert("data outside of current chunk space (second request)", data >= tier.current->start && data < tier.current->end);
+    d2 = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d2 request)", d2 != NULL);
+    mu_assert("data outside of current chunk space (second request)", d2 >= tier.current->start && d2 < tier.current->end);
 
     wfePoolTierRecycle(&tier);
-    mu_assert("LOLOLOLO", 0);
+    d3 = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d3 request)", d3 != NULL);
+    mu_assert("did not recycle d1", d1 == d3);
+
+    d4 = wfePoolTierGet(&tier, sizeof(wfePoolDummy), wfeAlignOf(wfePoolDummy));
+    mu_assert("unexpected null pointer (d3 request)", d4 != NULL);
+    mu_assert("did not recycle d2", d2 == d4);
 
     wfePoolTierFinalize(&tier);
     return 0;
