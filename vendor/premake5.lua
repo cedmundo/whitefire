@@ -25,7 +25,6 @@ project "zlib"
 project "libpng"
   language "C"
   kind "StaticLib"
-  warnings "off"
   targetdir "lib"
   targetprefix ""
   includedirs {"misc"}
@@ -50,6 +49,21 @@ project "libpng"
 
   -- TODO: Configuration/Definitions?
   -- TODO: Add optimizations for architecture/system
+
+project "msgpack"
+  language "C"
+  kind "StaticLib"
+  targetdir "lib"
+  targetprefix ""
+
+  includedirs {"msgpack-c/include"}
+  files {
+    "msgpack-c/src/vrefbuffer.c",
+    "msgpack-c/src/version.c",
+    "msgpack-c/src/zone.c",
+    "msgpack-c/src/objectc.c",
+    "msgpack-c/src/unpack.c",
+  }
 
 project "zlib-test"
   language "C"
@@ -82,3 +96,17 @@ project "libpng-test"
       "{DELETE} pngtest.png",
       "{DELETE} pngout.png"
   }
+
+project "msgpack-test"
+  language "C"
+  kind "ConsoleApp"
+  targetdir "bin/%{cfg.buildcfg}"
+  dependson {"msgpack"}
+  links {"msgpack"}
+  includedirs {"msgpack-c/include"}
+
+  files {"msgpack-c/example/c/simple_c.c"}
+  postbuildcommands {
+    "./bin/%{cfg.buildcfg}/msgpack-test"
+  }
+

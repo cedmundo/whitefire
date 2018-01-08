@@ -4,3 +4,6 @@
 [submodule "vendor/libpng"]
 	path = vendor/libpng
 	url = git@github.com:glennrp/libpng.git
+[submodule "vendor/msgpack-c"]
+	path = vendor/msgpack-c
+	url = git@github.com:msgpack/msgpack-c.git
