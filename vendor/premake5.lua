@@ -28,7 +28,7 @@ project "libpng"
   warnings "off"
   targetdir "lib"
   targetprefix ""
-  includedirs {"vendor/misc"}
+  includedirs {"misc"}
 
   files {
     "libpng/png.c",
@@ -73,6 +73,7 @@ project "libpng-test"
 
   dependson {"zlib", "libpng"}
   links {"m", "zlib", "libpng"}
+  includedirs {"misc"}
   files {"libpng/pngtest.c"}
 
   postbuildcommands {
