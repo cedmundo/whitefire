@@ -4,7 +4,7 @@ project "wferuntime"
     cdialect "C11"
     targetdir "lib/%{cfg.buildcfg}"
 
-    includedirs {"include"}
+    includedirs {"include", "../vendor"}
     files {"src/**.c", "src/**.h"}
 
     filter "platforms:Linux"
@@ -21,7 +21,7 @@ project "wferuntime-test"
     cdialect "C11"
     targetdir "bin/%{cfg.buildcfg}/Tests"
 
-    includedirs {"include"}
+    includedirs {"include", "../vendor"}
     files {"tests/**.c", "tests/**.h"}
     links {"wferuntime"}
 
