@@ -16,6 +16,8 @@ workspace "Whitefire"
     filter "system:not windows"
       defines {"HAVE_UNISTD_H"}
 
+    filter {}
+
 
 include "vendor"
 include "runtime"

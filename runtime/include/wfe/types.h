@@ -75,15 +75,18 @@ typedef wfeInt64 wfeError;
 #define WFE_FAILURE ((wfeError) 0x1L)
 #define WFE_MEMORY_ERROR ((wfeError) 0x3L)
 #define WFE_FILE_ERROR ((wfeError) 0x5L)
+#define WFE_API_ERROR ((wfeError) 0x8L)
 
 #define WFE_MAKE_FAILURE(code) (WFE_FAILURE | (code<<8))
 #define WFE_MAKE_MEMORY_ERROR(code) (WFE_MEMORY_ERROR | (code<<8))
 #define WFE_MAKE_FILE_ERROR(code) (WFE_FILE_ERROR | (code<<8))
+#define WFE_MAKE_API_ERROR(code) (WFE_API_ERROR | (code<<8))
 
 #define WFE_CHECK_FLAG(value, bitindex) ((value & (1 << bitindex)) != 0)
 #define WFE_HAS_FAILED(value) WFE_CHECK_FLAG(value, 0)
 #define WFE_HAS_MEMORY_ERROR(value) WFE_CHECK_FLAG(value, 1)
 #define WFE_HAS_FILE_ERROR(value) WFE_CHECK_FLAG(value, 2)
+#define WFE_HAS_API_ERROR(value) WFE_CHECK_FLAG(value, 3)
 
 #define WFE_USER_ERROR_CODE(value) (value>>8)
 #endif
