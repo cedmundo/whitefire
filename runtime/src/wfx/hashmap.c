@@ -1,4 +1,4 @@
-#include <wfe/hashmap.h>
+#include <wfx/hashmap.h>
 #include <wfe/types.h>
 #include <stdlib.h>
 #include <string.h>
