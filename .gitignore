@@ -61,3 +61,6 @@ Makefile
 
 # Vim memory files
 *.swp
+
+# Log files
+*.log
