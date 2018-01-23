@@ -1,7 +1,7 @@
 #include "minunit.h"
 #include <wfe/game.h>
 
-static char * test_types_make_finalize() {
+static char * test_game_make_finalize() {
     // Try making a window and destroying it.
     wfeGame *game = wfeGameMake(NULL, NULL);
     mu_assert("game is null", game != NULL);
@@ -11,9 +11,9 @@ static char * test_types_make_finalize() {
 }
 
 static char * game_suite() {
-    mu_suite_start(types);
-    mu_run_test(test_types_make_finalize);
-    mu_suite_end(types);
+    mu_suite_start(game);
+    mu_run_test(test_game_make_finalize);
+    mu_suite_end(game);
     return 0;
 }
 

@@ -4,8 +4,8 @@ project "wferuntime"
     cdialect "C11"
     targetdir "lib/%{cfg.buildcfg}"
 
-    includedirs {"include", "../vendor"}
-    files {"src/**.c", "src/**.h"}
+    includedirs {"include", "../vendor", "../vendor/msgpack-c/include"}
+    files {"src/**.c", "src/**.h", "msgpack"}
 
     filter "platforms:Linux"
         defines {"WFE_USE_STDDEF", "WFE_USE_STDINT"}
@@ -25,9 +25,9 @@ project "wferuntime-test"
     cdialect "C11"
     targetdir "bin/%{cfg.buildcfg}/Tests"
 
-    includedirs {"include", "../vendor"}
+    includedirs {"include", "../vendor", "../vendor/msgpack-c/include"}
     files {"tests/**.c", "tests/**.h"}
-    links {"wferuntime", "glfw"}
+    links {"wferuntime", "glfw", "msgpack"}
 
     postbuildcommands {
         "./bin/%{cfg.buildcfg}/Tests/wferuntime-test"
