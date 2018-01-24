@@ -26,7 +26,7 @@ project "wferuntime-test"
     targetdir "bin/%{cfg.buildcfg}/Tests"
 
     includedirs {"include", "../vendor", "../vendor/msgpack-c/include"}
-    files {"tests/**.c", "tests/**.h"}
+    files {"tests/main.c", "tests/**.h"}
     links {"wferuntime", "glfw", "msgpack"}
 
     postbuildcommands {

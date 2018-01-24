@@ -2,9 +2,12 @@
 #define IKE_MATHUTIL_H
 #include <math.h>
 
+#define EPSILON1 0.0001
 #define TODEG(m) ((m)*57.2958f)
 #define TORAD(m) ((m)*0.0174533f)
 #define ROUND4(m) (ceilf((m) * 10000.f)/10000.f)
+#define APPROXEQF(a,b) (fabs(a-b)<EPSILON1)
+#define APPROXEQ(a,b) (abs(a-b)<EPSILON1)
 
 // MAX/MIN: https://stackoverflow.com/questions/3437404/min-and-max-in-c
 #define ENSURE_size_t(i)    _Generic((i), long unsigned int:   (i))

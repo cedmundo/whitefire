@@ -73,6 +73,7 @@ typedef wfeChar wfeBool;
 // Error definition.
 typedef wfeInt64 wfeError;
 #define WFE_SUCCESS ((wfeError) 0x0L)
+#define WFE_DONE ((wfeError) 0x0L)
 #define WFE_CONTINUE ((wfeError) 0x1L)
 #define WFE_FAILURE ((wfeError) 0x2L)
 #define WFE_MEMORY_ERROR ((wfeError) 0x6L)
