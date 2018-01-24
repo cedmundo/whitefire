@@ -7,9 +7,6 @@
 [submodule "vendor/msgpack-c"]
 	path = vendor/msgpack-c
 	url = git@github.com:msgpack/msgpack-c.git
-[submodule "vendor/pkgconfig"]
-	path = vendor/pkgconfig
-	url = git@github.com:tarruda/premake-pkgconfig.git
 [submodule "vendor/misc/md5"]
 	path = vendor/misc/md5
 	url = https://github.com/kikito/md5.lua
