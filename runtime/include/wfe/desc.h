@@ -49,7 +49,7 @@ void wfeDescFinalize(wfeDesc *desc);
  *  - WFE_DESC_UNSUPPORTED_TYPE if first type on msgpack is not a map.
  *  - WFE_DESC_MAGPACK_ERROR when msgpack returns an error.
  */
-wfeError wfeDescDecodeBuffer(wfeDesc *desc, wfeData *buf, wfeSize len);
+wfeError wfeDescDecodeBuffer(wfeDesc *desc, const wfeData *buf, const wfeSize len);
 
 /**
  * Looks for the next key on the description.

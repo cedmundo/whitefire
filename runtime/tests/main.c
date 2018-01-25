@@ -5,6 +5,7 @@
 #include "types_suite.c"
 #include "pool_suite.c"
 #include "desc_suite.c"
+#include "asset_suite.c"
 #include "game_suite.c"
 
 int tests_run = 0;
@@ -13,6 +14,7 @@ static char * all_suites() {
     mu_run_suite(types_suite);
     mu_run_suite(pool_suite);
     mu_run_suite(desc_suite);
+    mu_run_suite(asset_suite);
     mu_run_suite(game_suite);
     return 0;
 }

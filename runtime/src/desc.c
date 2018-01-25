@@ -19,7 +19,7 @@ void wfeDescFinalize(wfeDesc *desc) {
     }
 }
 
-wfeError wfeDescDecodeBuffer(wfeDesc *desc, wfeData *buf, wfeSize len) {
+wfeError wfeDescDecodeBuffer(wfeDesc *desc, const wfeData *buf, const wfeSize len) {
     wfeSize offset = 0L;
     msgpack_unpack_return ret;
 

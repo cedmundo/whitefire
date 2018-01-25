@@ -7,6 +7,12 @@
 [submodule "vendor/msgpack-c"]
 	path = vendor/msgpack-c
 	url = git@github.com:msgpack/msgpack-c.git
-[submodule "vendor/misc/md5"]
-	path = vendor/misc/md5
+[submodule "vendor/lualibs/md5"]
+	path = vendor/lualibs/md5
 	url = https://github.com/kikito/md5.lua
+[submodule "vendor/lualibs/msgpack"]
+	path = vendor/lualibs/msgpack
+	url = https://github.com/fperrad/lua-MessagePack
+[submodule "vendor/lualibs/lyaml"]
+	path = vendor/lualibs/lyaml
+	url = https://github.com/gvvaughan/lyaml
