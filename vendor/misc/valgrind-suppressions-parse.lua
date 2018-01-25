@@ -1,7 +1,7 @@
 #! /usr/bin/lua
 
 -- Warning! this script should be executed on root to lookup vendor md5.
-package.path = './vendor/misc/md5/?.lua;' .. package.path -- our vendor scripts
+package.path = './vendor/lualibs/md5/?.lua;' .. package.path -- our vendor scripts
 
 --
 -- Based on awk version from valgrind docs: https://wiki.wxwidgets.org/Valgrind_Suppression_File_Howto
@@ -19,8 +19,10 @@ local currentSum = nil
 local supplines = ""
 
 function shouldPrint(desired)
-    for hash in ipairs(alreadyPrint) do
-        if desired == hash then return false end
+    for ix, hash in ipairs(alreadyPrint) do
+        if desired == hash then
+            return false
+        end
     end
 
     return true
