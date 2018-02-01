@@ -89,7 +89,7 @@ wfeGame *wfeGameMake(wfeChar *cname, wfeAny context) {
     }
 
     // Default viewport
-    glViewport(0, 0, WFE_WINDOW_DEFAULT_WIDTH, WFE_WINDOW_DEFAULT_HEIGHT);
+    glViewport(0, 0, config.width, config.height);
 
 finalize:
     if (WFE_HAS_FAILED(game->lastError)) {
@@ -121,6 +121,10 @@ wfeError wfeGameLastError(wfeGame *game) {
 
 void wfeHandleFramebufferResize(GLFWwindow *window, GLint width, GLint height) {
     glViewport(0, 0, width, height);
+}
+
+wfeAny wfeGameGetContext(wfeGame *game) {
+    return game->window;
 }
 
 wfeError wfeConfigureGame(wfeGameConfig *config, const wfeChar *cname, wfePool *pool) {
@@ -158,7 +162,7 @@ wfeError wfeConfigureGame(wfeGameConfig *config, const wfeChar *cname, wfePool *
         }
 
         if (strncmp(kname, "width", ksize) == 0) {
-            code = wfeDescGetInt(&desc, &config->height);
+            code = wfeDescGetInt(&desc, &config->width);
             if (WFE_HAVE_FAILED(code)) {
                 config->width = WFE_WINDOW_DEFAULT_WIDTH;
                 goto finalize;

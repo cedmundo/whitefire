@@ -7,6 +7,7 @@
 #include "desc_suite.c"
 #include "asset_suite.c"
 #include "game_suite.c"
+#include "mesh_suite.c"
 
 int tests_run = 0;
 static char * all_suites() {
@@ -16,6 +17,7 @@ static char * all_suites() {
     mu_run_suite(desc_suite);
     mu_run_suite(asset_suite);
     mu_run_suite(game_suite);
+    mu_run_suite(mesh_suite);
     return 0;
 }
 

@@ -55,5 +55,15 @@ void wfeGameFinalize(wfeGame *game);
  */
 wfeError wfeGameLastError(wfeGame *game);
 
+/**
+ * Returns the raw pointer to used context.
+ * Param:
+ *  - wfeGame reference.
+ * Return:
+ *  - Using GLFW: GLFWwindow reference.
+ *  - Using GLFM: GLFMDisplay reference.
+ */
+wfeAny wfeGameGetContext(wfeGame *game);
+
 
 #endif /* WFE_GAME_H */

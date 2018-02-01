@@ -1,5 +1,5 @@
-height: 800
-width: 600
+height: 600
+width: 800
 title: "WhiteFire Game Engine Testing"
-focused: false
-visible: false
+focused: true
+visible: true

@@ -30,28 +30,43 @@ typedef char wfeChar;
 // Integer definition.
 #ifdef WFE_USE_STDINT
     #include <stdint.h>
+    typedef int8_t wfeInt8;
     typedef int16_t wfeInt16;
     typedef int32_t wfeInt32;
-    typedef uint32_t wfeUint32;
     typedef int64_t wfeInt64;
+
+    typedef uint8_t wfeUint8;
+    typedef uint16_t wfeUint16;
+    typedef uint32_t wfeUint32;
     typedef uint64_t wfeUint64;
+
     typedef int64_t wfeInt;
     typedef uint64_t wfeUint;
 #elif defined(WFE_USE_MSVSCINT)
+    typedef __int8 wfeInt8;
     typedef __int16 wfeInt16;
     typedef __int32 wfeInt32;
-    typedef unsigned __int32 wfeUint32;
     typedef __int64 wfeInt64;
+
+    typedef unsigned __int8 wfeUint8;
+    typedef unsigned __int16 wfeUint16;
+    typedef unsigned __int32 wfeUint32;
     typedef unsigned __int64 wfeUint64;
+
     typedef __int64 wfeInt;
     typedef unsigned __int64 wfeUint;
 #else
 #warning "Integer type size is not guaranteed"
+    typedef char wfeInt8;
     typedef short wfeInt16;
     typedef int wfeInt32;
-    typedef unsigned int wfeUint32;
     typedef long wfeInt64;
+
+    typedef unsigned char wfeUint8;
+    typedef unsigned short wfeUint16;
+    typedef unsigned int wfeUint32;
     typedef unsigned long wfeUint64;
+
     typedef long wfeInt;
     typedef unsigned long wfeUint;
 #endif
